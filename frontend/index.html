@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maternal Health Risk Predictor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>🤰 Maternal Health Risk Prediction</h1>
+
+    <div class="form-card">
+        <label for="age">Age</label>
+        <input type="number" id ="age" placeholder="Enter age">
+
+        <label for="systolicbp">Systolic BP</label>
+        <input type="number" id="systolicbp" placeholder="e.g. 120">
+
+        <label for="diastolicbp">Diastolic BP</label>
+        <input type="number" id="diastolicbp" placeholder="e.g. 80">
+
+        <label for="bs">Blood Sugar</label>
+        <input type="number" step="0.1" id="bs" placeholder="e.g. 7.5">
+
+        <label for="bodytemp">Body Temperature</label>
+        <input type="number" step="0.1" id="bodytemp" placeholder="e.g. 98.6">
+
+        <label for="heartrate">Heart Rate</label>
+        <input type="number" id="heartrate" placeholder="e.g. 75">
+
+        <select id="duration">
+  <option value="week">Weekly Plan</option>
+  <option value="month">Monthly Plan</option>
+    </select>
+
+
+        <button id="analyzeBtn">Analyze</button>
+    </div>
+
+    <div id="result" class="result"></div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
