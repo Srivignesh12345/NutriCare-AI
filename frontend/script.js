@@ -1,21 +1,23 @@
 // ===============================
-// CONFIG (CHANGE ONLY THIS LATER)
+// CONFIG (AUTO SWITCH LOCAL / PROD)
 // ===============================
 const API_BASE_URL =
     window.location.hostname === "localhost"
         ? "http://127.0.0.1:5000"
-        : "https://nutricare-api.onrender.com"; // 🔁 replace after Render deploy
+        : "https://nutricare-api.onrender.com";
 
 // Ensure JS is loaded
 console.log("script.js loaded");
 
 // Attach event after page loads
 document.addEventListener("DOMContentLoaded", () => {
-    document
-        .getElementById("analyzeBtn")
-        .addEventListener("click", analyze);
+    const btn = document.getElementById("analyzeBtn");
+    btn.addEventListener("click", analyze);
 });
 
+// ===============================
+// ANALYZE FUNCTION
+// ===============================
 async function analyze() {
     console.log("Analyze button clicked");
 
@@ -38,47 +40,74 @@ async function analyze() {
         }
     }
 
-    document.getElementById("result").innerHTML = "⏳ Analyzing...";
+    const resultDiv = document.getElementById("result");
+    resultDiv.innerHTML = "⏳ Analyzing...";
 
     try {
+        console.log("Calling API:", `${API_BASE_URL}/analyze`, data);
+
         const response = await fetch(`${API_BASE_URL}/analyze`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data)
         });
 
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Server error ${response.status}: ${errorText}`);
+        }
+
         const result = await response.json();
 
-        document.getElementById("result").innerHTML = `
+        resultDiv.innerHTML = `
             <h3>🩺 Risk Level: <span class="risk">${result.risk}</span></h3>
             <p>${result.message}</p>
-            <button onclick="getDiet('${result.risk}', '${duration}')">
+            <button id="dietBtn">
                 Get ${duration === "week" ? "Weekly" : "Monthly"} Diet Plan
             </button>
         `;
+
+        document
+            .getElementById("dietBtn")
+            .addEventListener("click", () =>
+                getDiet(result.risk, duration)
+            );
+
     } catch (err) {
-        console.error(err);
-        document.getElementById("result").innerHTML =
-            "❌ Backend not reachable";
+        console.error("Analyze error:", err);
+        resultDiv.innerHTML =
+            "❌ Backend not reachable. Please try again later.";
     }
 }
 
+// ===============================
+// DIET PLAN FUNCTION
+// ===============================
 async function getDiet(risk, duration) {
-    document.getElementById("result").innerHTML += "<p>🍽️ Loading diet plan...</p>";
+    const resultDiv = document.getElementById("result");
+    resultDiv.innerHTML += "<p>🍽️ Loading diet plan...</p>";
 
     try {
+        console.log("Fetching diet plan:", risk, duration);
+
         const response = await fetch(`${API_BASE_URL}/diet-plan`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ risk, duration })
         });
 
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Server error ${response.status}: ${errorText}`);
+        }
+
         const data = await response.json();
 
-        // Sort Day 1 → Day N correctly
+        // Sort days correctly (Day 1 → Day N)
         const sortedDays = Object.keys(data.diet_plan).sort((a, b) => {
-            return parseInt(a.replace(/\D/g, "")) -
-                   parseInt(b.replace(/\D/g, ""));
+            const numA = parseInt(a.replace(/\D/g, ""));
+            const numB = parseInt(b.replace(/\D/g, ""));
+            return numA - numB;
         });
 
         let html = `<h3>📅 ${duration.toUpperCase()} DIET PLAN</h3>`;
@@ -97,9 +126,10 @@ async function getDiet(risk, duration) {
             `;
         });
 
-        document.getElementById("result").innerHTML += html;
+        resultDiv.innerHTML += html;
+
     } catch (err) {
-        console.error(err);
-        alert("Failed to load diet plan");
+        console.error("Diet plan error:", err);
+        alert("❌ Failed to load diet plan");
     }
 }
