@@ -1,11 +1,19 @@
+// ===============================
+// CONFIG (CHANGE ONLY THIS LATER)
+// ===============================
+const API_BASE_URL =
+    window.location.hostname === "localhost"
+        ? "http://127.0.0.1:5000"
+        : "https://nutricare-api.onrender.com"; // 🔁 replace after Render deploy
+
 // Ensure JS is loaded
 console.log("script.js loaded");
 
 // Attach event after page loads
 document.addEventListener("DOMContentLoaded", () => {
-    const btn = document.getElementById("analyzeBtn");
-
-    btn.addEventListener("click", analyze);
+    document
+        .getElementById("analyzeBtn")
+        .addEventListener("click", analyze);
 });
 
 async function analyze() {
@@ -33,8 +41,7 @@ async function analyze() {
     document.getElementById("result").innerHTML = "⏳ Analyzing...";
 
     try {
-        // Call Analyze API
-        const response = await fetch("http://127.0.0.1:5000/analyze", {
+        const response = await fetch(`${API_BASE_URL}/analyze`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data)
@@ -49,11 +56,10 @@ async function analyze() {
                 Get ${duration === "week" ? "Weekly" : "Monthly"} Diet Plan
             </button>
         `;
-
     } catch (err) {
         console.error(err);
         document.getElementById("result").innerHTML =
-            "❌ Backend not reachable. Is Flask running?";
+            "❌ Backend not reachable";
     }
 }
 
@@ -61,7 +67,7 @@ async function getDiet(risk, duration) {
     document.getElementById("result").innerHTML += "<p>🍽️ Loading diet plan...</p>";
 
     try {
-        const response = await fetch("http://127.0.0.1:5000/diet-plan", {
+        const response = await fetch(`${API_BASE_URL}/diet-plan`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ risk, duration })
@@ -69,11 +75,10 @@ async function getDiet(risk, duration) {
 
         const data = await response.json();
 
-        // 🔹 Sort days numerically (Day 1, Day 2, ..., Day 30)
+        // Sort Day 1 → Day N correctly
         const sortedDays = Object.keys(data.diet_plan).sort((a, b) => {
-            const numA = parseInt(a.replace(/\D/g, ""));
-            const numB = parseInt(b.replace(/\D/g, ""));
-            return numA - numB;
+            return parseInt(a.replace(/\D/g, "")) -
+                   parseInt(b.replace(/\D/g, ""));
         });
 
         let html = `<h3>📅 ${duration.toUpperCase()} DIET PLAN</h3>`;
@@ -93,7 +98,6 @@ async function getDiet(risk, duration) {
         });
 
         document.getElementById("result").innerHTML += html;
-
     } catch (err) {
         console.error(err);
         alert("Failed to load diet plan");
