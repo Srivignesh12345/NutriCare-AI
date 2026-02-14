@@ -21,7 +21,24 @@ label_encoder = joblib.load(ENCODER_PATH)
 # Flask App
 # =====================================================
 app = Flask(__name__)
-CORS(app)
+
+CORS(
+    app,
+    resources={r"/*": {"origins": "*"}},
+    supports_credentials=True,
+    allow_headers=["Content-Type", "Authorization"],
+    methods=["GET", "POST", "OPTIONS"]
+)
+
+# =====================================================
+# Force CORS headers on every response
+# =====================================================
+@app.after_request
+def after_request(response):
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
+    response.headers.add("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
+    return response
 
 # =====================================================
 # Firebase (Safe Initialization)
@@ -34,8 +51,9 @@ try:
     from firebase_admin import credentials, firestore
 
     if not firebase_admin._apps:
-        cred = credentials.Certificate(os.environ["GOOGLE_APPLICATION_CREDENTIALS"])
-
+        cred = credentials.Certificate(
+            os.environ.get("GOOGLE_APPLICATION_CREDENTIALS")
+        )
         firebase_admin.initialize_app(cred)
 
     db = firestore.client()
@@ -45,11 +63,11 @@ except Exception as e:
     print("⚠️ Firebase disabled:", e)
 
 # =====================================================
-# Analyze API (ML Prediction)
+# Analyze API
 # =====================================================
-@app.route("/analyze", methods=["POST"])
+@app.route("/analyze", methods=["POST", "OPTIONS"])
 def analyze():
-    data = request.json
+    data = request.get_json()
 
     required_fields = [
         "age", "systolicbp", "diastolicbp",
@@ -60,7 +78,7 @@ def analyze():
         if field not in data:
             return jsonify({"error": f"Missing field: {field}"}), 400
 
-    features = np.array([[
+    features = np.array([[  
         data["age"],
         data["systolicbp"],
         data["diastolicbp"],
@@ -73,12 +91,7 @@ def analyze():
     risk = label_encoder.inverse_transform(prediction)[0]
 
     record = {
-        "age": data["age"],
-        "systolicbp": data["systolicbp"],
-        "diastolicbp": data["diastolicbp"],
-        "bs": data["bs"],
-        "bodytemp": data["bodytemp"],
-        "heartrate": data["heartrate"],
+        **data,
         "risk": risk,
         "timestamp": datetime.utcnow().isoformat()
     }
@@ -92,17 +105,16 @@ def analyze():
     })
 
 # =====================================================
-# Diet Plan API (Weekly / Monthly)
+# Diet Plan API
 # =====================================================
-@app.route("/diet-plan", methods=["POST"])
+@app.route("/diet-plan", methods=["POST", "OPTIONS"])
 def diet_plan():
-    data = request.json
+    data = request.get_json()
 
     risk = data.get("risk", "Medium")
     duration = data.get("duration", "week")
 
     days = 7 if duration == "week" else 30
-
     diet = generate_diet(days, risk)
 
     response = {
@@ -125,14 +137,16 @@ def history():
     if not db:
         return jsonify([])
 
-    docs = db.collection("nutrition_reports") \
-             .order_by("timestamp", direction=firestore.Query.DESCENDING) \
-             .stream()
+    docs = (
+        db.collection("nutrition_reports")
+        .order_by("timestamp", direction=firestore.Query.DESCENDING)
+        .stream()
+    )
 
     return jsonify([doc.to_dict() for doc in docs])
 
 # =====================================================
-# Health Check API (Optional but Professional)
+# Health Check
 # =====================================================
 @app.route("/", methods=["GET"])
 def health():
@@ -142,7 +156,8 @@ def health():
     })
 
 # =====================================================
-# Run Server
+# Run Server (LOCAL + RENDER)
 # =====================================================
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=5000, debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
