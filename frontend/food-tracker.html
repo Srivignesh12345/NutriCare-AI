@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Intake Tracker - NutriCare AI</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="food-tracker.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <h1>🤰 NutriCare AI - Food Tracker</h1>
+            <p class="tagline">Track your daily meals with AI-powered analysis</p>
+        </div>
+        <button onclick="window.location.href='dashboard.html'" class="nav-btn">← Back to Dashboard</button>
+    </nav>
+
+    <div class="dashboard-container">
+        <div class="card">
+            <h2>📸 Daily Food Intake Tracker</h2>
+            <p class="subtitle">Upload photos or type what you ate for breakfast, lunch, and dinner</p>
+
+            <!-- Breakfast -->
+            <div class="meal-section">
+                <h3>🌅 Breakfast</h3>
+                <div class="meal-input">
+                    <div class="image-upload">
+                        <input type="file" id="breakfast-image" accept="image/*" onchange="previewImage('breakfast')">
+                        <label for="breakfast-image" class="upload-label">
+                            <div id="breakfast-preview" class="preview-box">
+                                <span class="upload-icon">📷</span>
+                                <p>Click to upload photo</p>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="text-input">
+                        <label>Or type what you ate:</label>
+                        <textarea id="breakfast-text" placeholder="e.g., 2 idlis, 1 bowl sambar, 1 glass milk"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lunch -->
+            <div class="meal-section">
+                <h3>☀️ Lunch</h3>
+                <div class="meal-input">
+                    <div class="image-upload">
+                        <input type="file" id="lunch-image" accept="image/*" onchange="previewImage('lunch')">
+                        <label for="lunch-image" class="upload-label">
+                            <div id="lunch-preview" class="preview-box">
+                                <span class="upload-icon">📷</span>
+                                <p>Click to upload photo</p>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="text-input">
+                        <label>Or type what you ate:</label>
+                        <textarea id="lunch-text" placeholder="e.g., 2 chapatis, 1 bowl dal, 1 bowl vegetables"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dinner -->
+            <div class="meal-section">
+                <h3>🌙 Dinner</h3>
+                <div class="meal-input">
+                    <div class="image-upload">
+                        <input type="file" id="dinner-image" accept="image/*" onchange="previewImage('dinner')">
+                        <label for="dinner-image" class="upload-label">
+                            <div id="dinner-preview" class="preview-box">
+                                <span class="upload-icon">📷</span>
+                                <p>Click to upload photo</p>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="text-input">
+                        <label>Or type what you ate:</label>
+                        <textarea id="dinner-text" placeholder="e.g., 1 bowl rice, 1 bowl curry, salad"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <button id="analyzeBtn" class="btn-primary" onclick="analyzeFoodIntake()">🔍 Analyze My Food Intake</button>
+        </div>
+
+        <!-- Results Section -->
+        <div id="resultsSection" style="display: none;">
+            <!-- Detected Foods -->
+            <div class="card">
+                <h3>🍽️ Detected Foods</h3>
+                <div id="detectedFoods" class="detected-foods"></div>
+            </div>
+
+            <!-- Nutrition Summary -->
+            <div class="card">
+                <h3>📊 Nutrition Summary</h3>
+                <div id="nutritionSummary" class="nutrition-grid"></div>
+            </div>
+
+            <!-- AI Recommendations -->
+            <div class="card">
+                <h3>💡 What You Should Eat Next</h3>
+                <p class="subtitle">Based on your intake, here's what your body needs</p>
+                <div id="recommendations" class="recommendations-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="food-tracker.js"></script>
+</body>
+</html>

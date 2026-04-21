@@ -1,0 +1,19 @@
+# Firebase credentials
+backend/firebase_key.json
+
+# Environment files
+.env
+
+# Python cache
+__pycache__/
+*.pyc
+
+# ML models (optional)
+*.pkl
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Node / build cache (future safety)
+node_modules/

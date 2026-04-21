@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Tracker Demo - NutriCare AI</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="food-tracker.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <h1>🤰 NutriCare AI - Food Tracker Demo</h1>
+            <p class="tagline">Sample results preview</p>
+        </div>
+        <button onclick="window.location.href='food-tracker.html'" class="nav-btn">Try Real Tracker</button>
+    </nav>
+
+    <div class="dashboard-container">
+        <div class="card">
+            <h2>📸 Sample Analysis Results</h2>
+            <p class="subtitle">This is how your food intake analysis will look</p>
+        </div>
+
+        <!-- Detected Foods -->
+        <div class="card">
+            <h3>🍽️ Detected Foods</h3>
+            <div class="detected-foods">
+                <div class="food-card">
+                    <span class="meal-type">🌅 BREAKFAST</span>
+                    <h4>Detected Items</h4>
+                    <ul>
+                        <li>2 idli</li>
+                        <li>1 sambar</li>
+                        <li>1 milk</li>
+                    </ul>
+                </div>
+                <div class="food-card">
+                    <span class="meal-type">☀️ LUNCH</span>
+                    <h4>Detected Items</h4>
+                    <ul>
+                        <li>2 chapati</li>
+                        <li>1 dal</li>
+                        <li>1 spinach</li>
+                        <li>1 curd</li>
+                    </ul>
+                </div>
+                <div class="food-card">
+                    <span class="meal-type">🌙 DINNER</span>
+                    <h4>Detected Items</h4>
+                    <ul>
+                        <li>1 rice</li>
+                        <li>1 curry</li>
+                        <li>1 salad</li>
+                        <li>2 egg</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nutrition Summary -->
+        <div class="card">
+            <h3>📊 Nutrition Summary</h3>
+            <div class="nutrition-grid">
+                <div class="nutrition-item">
+                    <h4>Calories</h4>
+                    <div class="nutrition-value">1650</div>
+                    <div class="nutrition-target">Target: 2200 kcal</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 75%"></div>
+                    </div>
+                </div>
+                <div class="nutrition-item">
+                    <h4>Protein</h4>
+                    <div class="nutrition-value">58</div>
+                    <div class="nutrition-target">Target: 80 g</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 72%"></div>
+                    </div>
+                </div>
+                <div class="nutrition-item">
+                    <h4>Iron</h4>
+                    <div class="nutrition-value">16</div>
+                    <div class="nutrition-target">Target: 27 mg</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 59%"></div>
+                    </div>
+                </div>
+                <div class="nutrition-item">
+                    <h4>Calcium</h4>
+                    <div class="nutrition-value">780</div>
+                    <div class="nutrition-target">Target: 1200 mg</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 65%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Recommendations -->
+        <div class="card">
+            <h3>💡 What You Should Eat Next</h3>
+            <p class="subtitle">Based on your intake, here's what your body needs</p>
+            <div class="recommendations-list">
+                <div class="recommendation-item">
+                    <h4>⚡ Increase Calorie Intake</h4>
+                    <p>You've consumed 1650 kcal. You need 2200 kcal daily for healthy pregnancy.</p>
+                    <ul>
+                        <li>Banana - Rich in natural sugars and potassium</li>
+                        <li>Dates - High energy, iron-rich</li>
+                        <li>Nuts - Almonds, walnuts for healthy fats</li>
+                        <li>Ghee - Add to meals for extra calories</li>
+                        <li>Brown Rice - Complex carbohydrates</li>
+                    </ul>
+                </div>
+                <div class="recommendation-item">
+                    <h4>🩸 Increase Iron-Rich Foods</h4>
+                    <p>You've consumed 16mg iron. Target: 27mg daily to prevent anemia.</p>
+                    <ul>
+                        <li>Spinach - Add to lunch or dinner</li>
+                        <li>Dates - 3-4 dates daily</li>
+                        <li>Ragi - Make porridge or roti</li>
+                        <li>Pomegranate - Fresh juice or fruit</li>
+                        <li>Beetroot - Salad or juice</li>
+                        <li>Jaggery - Replace sugar</li>
+                    </ul>
+                </div>
+                <div class="recommendation-item">
+                    <h4>🦴 Add More Calcium</h4>
+                    <p>You've consumed 780mg calcium. Target: 1200mg daily for strong bones.</p>
+                    <ul>
+                        <li>Milk - Add one more glass</li>
+                        <li>Paneer - Include in meals</li>
+                        <li>Sesame Seeds - Sprinkle on food</li>
+                        <li>Ragi - Calcium-rich millet</li>
+                        <li>Cheese - Small portions</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="text-align: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+            <h2 style="color: white;">Ready to Track Your Meals?</h2>
+            <p style="color: white; opacity: 0.9;">Upload your food photos and get personalized nutrition insights</p>
+            <button onclick="window.location.href='food-tracker.html'" class="btn-primary" style="background: white; color: #667eea; margin-top: 20px;">
+                Start Tracking Now →
+            </button>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriCare AI - Your Nutrition Companion</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <h1>🤰 NutriCare AI</h1>
+            <p class="tagline">Your personalized nutrition companion</p>
+        </div>
+        <div class="nav-buttons">
+            <button class="nav-btn active" data-view="pregnancy">
+                <span class="icon">🤰</span>
+                <span>During Pregnancy</span>
+            </button>
+            <button class="nav-btn" data-view="postpartum">
+                <span class="icon">👶</span>
+                <span>After Delivery</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- PREGNANCY DASHBOARD -->
+    <div id="pregnancyView" class="dashboard-view active">
+        <div class="dashboard-container">
+            <!-- Health Input Section -->
+            <div class="card input-card">
+                <div class="card-header">
+                    <div>
+                        <h2>📋 Let's Check Your Health</h2>
+                        <p class="subtitle">Enter your current health details for personalized insights</p>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <select id="foodPreference">
+                            <option value="vegetarian">Vegetarian</option>
+                            <option value="eggetarian">Eggetarian</option>
+                            <option value="nonvegetarian">Non-Vegetarian</option>
+                        </select>
+                        <select id="duration">
+                            <option value="week">7-Day Plan</option>
+                            <option value="month">30-Day Plan</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label>Your Age</label>
+                        <input type="number" id="age" placeholder="e.g., 28">
+                    </div>
+                    <div class="input-group">
+                        <label>Systolic BP</label>
+                        <input type="number" id="systolicbp" placeholder="e.g., 120">
+                    </div>
+                    <div class="input-group">
+                        <label>Diastolic BP</label>
+                        <input type="number" id="diastolicbp" placeholder="e.g., 80">
+                    </div>
+                    <div class="input-group">
+                        <label>Blood Sugar (mmol/L)</label>
+                        <input type="number" step="0.1" id="bs" placeholder="e.g., 7.5">
+                    </div>
+                    <div class="input-group">
+                        <label>Body Temperature (°F)</label>
+                        <input type="number" step="0.1" id="bodytemp" placeholder="e.g., 98.6">
+                    </div>
+                    <div class="input-group">
+                        <label>Heart Rate (bpm)</label>
+                        <input type="number" id="heartrate" placeholder="e.g., 75">
+                    </div>
+                </div>
+                <button id="analyzeBtn" class="btn-primary">✨ Analyze My Health</button>
+            </div>
+
+            <!-- Health Status & Risk -->
+            <div class="row">
+                <div class="card health-status">
+                    <h3>💚 Your Health Summary</h3>
+                    <div id="healthDisplay" class="health-info">
+                        <p class="placeholder-text">Enter your health details above to see your personalized summary</p>
+                    </div>
+                </div>
+                <div class="card risk-card">
+                    <h3>🎯 Health Risk Assessment</h3>
+                    <div id="riskDisplay" class="risk-info">
+                        <div class="risk-badge">Awaiting Analysis</div>
+                        <p class="placeholder-text">We'll assess your health risk after analysis</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nutritional Deficiency Analysis -->
+            <div class="card">
+                <h3>🍎 What Your Body Needs</h3>
+                <p class="subtitle">Understanding your nutritional requirements during pregnancy</p>
+                <div id="deficiencyTable">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nutrient</th>
+                                <th>Daily Goal</th>
+                                <th>Current Intake</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="deficiencyBody">
+                            <tr><td colspan="4" class="placeholder-text">Complete health analysis to see your nutrition status</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Food Intake Tracker with Image Upload -->
+            <div class="card">
+                <h3>📸 Track Your Daily Food Intake</h3>
+                <p class="subtitle">Upload photos or type what you ate - the system will automatically detect meal time</p>
+                
+                <!-- Current Time Display -->
+                <div id="currentTimeDisplay" style="text-align: center; padding: 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 10px; margin-bottom: 20px;">
+                    <h4 style="color: white; margin: 0;">🕐 Current Time: <span id="currentTime"></span></h4>
+                    <p style="margin: 5px 0 0 0; font-size: 14px;">Active Meal: <span id="activeMeal" style="font-weight: bold;"></span></p>
+                </div>
+
+                <!-- Breakfast Section (8:00 AM - 11:00 AM) -->
+                <div id="breakfastSection" class="meal-section" style="display: none;">
+                    <h4>🌅 Breakfast (8:00 AM - 11:00 AM)</h4>
+                    <div class="meal-input">
+                        <div class="image-upload">
+                            <input type="file" id="breakfast-image" accept="image/*" onchange="previewImage('breakfast')">
+                            <label for="breakfast-image" class="upload-label">
+                                <div id="breakfast-preview" class="preview-box">
+                                    <span class="upload-icon">📷</span>
+                                    <p>Click to upload photo</p>
+                                </div>
+                            </label>
+                        </div>
+                        <div class="text-input">
+                            <label>Or type what you ate:</label>
+                            <textarea id="breakfast-text" placeholder="e.g., 2 idlis, 1 bowl sambar, 1 glass milk"></textarea>
+                        </div>
+                    </div>
+                    <button onclick="saveMeal('breakfast')" class="btn-secondary" style="margin-top: 15px;">💾 Save Breakfast</button>
+                </div>
+
+                <!-- Lunch Section (12:00 PM - 3:00 PM) -->
+                <div id="lunchSection" class="meal-section" style="display: none;">
+                    <h4>☀️ Lunch (12:00 PM - 3:00 PM)</h4>
+                    <div class="meal-input">
+                        <div class="image-upload">
+                            <input type="file" id="lunch-image" accept="image/*" onchange="previewImage('lunch')">
+                            <label for="lunch-image" class="upload-label">
+                                <div id="lunch-preview" class="preview-box">
+                                    <span class="upload-icon">📷</span>
+                                    <p>Click to upload photo</p>
+                                </div>
+                            </label>
+                        </div>
+                        <div class="text-input">
+                            <label>Or type what you ate:</label>
+                            <textarea id="lunch-text" placeholder="e.g., 2 chapatis, 1 bowl dal, 1 bowl vegetables"></textarea>
+                        </div>
+                    </div>
+                    <button onclick="saveMeal('lunch')" class="btn-secondary" style="margin-top: 15px;">💾 Save Lunch</button>
+                </div>
+
+                <!-- Dinner Section (7:30 PM - 10:00 PM) -->
+                <div id="dinnerSection" class="meal-section" style="display: none;">
+                    <h4>🌙 Dinner (7:30 PM - 10:00 PM)</h4>
+                    <div class="meal-input">
+                        <div class="image-upload">
+                            <input type="file" id="dinner-image" accept="image/*" onchange="previewImage('dinner')">
+                            <label for="dinner-image" class="upload-label">
+                                <div id="dinner-preview" class="preview-box">
+                                    <span class="upload-icon">📷</span>
+                                    <p>Click to upload photo</p>
+                                </div>
+                            </label>
+                        </div>
+                        <div class="text-input">
+                            <label>Or type what you ate:</label>
+                            <textarea id="dinner-text" placeholder="e.g., 1 bowl rice, 1 bowl curry, salad"></textarea>
+                        </div>
+                    </div>
+                    <button onclick="saveMeal('dinner')" class="btn-secondary" style="margin-top: 15px;">💾 Save Dinner</button>
+                </div>
+
+                <!-- Outside Meal Time Message -->
+                <div id="outsideMealTime" class="meal-section" style="display: none; text-align: center; padding: 40px;">
+                    <h4 style="color: #666;">⏰ Not a Meal Time</h4>
+                    <p style="color: #888; margin: 15px 0;">You can track your meals during these times:</p>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px;">
+                        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                            <div style="font-size: 24px; margin-bottom: 5px;">🌅</div>
+                            <strong>Breakfast</strong><br>
+                            <small>8:00 AM - 11:00 AM</small>
+                        </div>
+                        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                            <div style="font-size: 24px; margin-bottom: 5px;">☀️</div>
+                            <strong>Lunch</strong><br>
+                            <small>12:00 PM - 3:00 PM</small>
+                        </div>
+                        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                            <div style="font-size: 24px; margin-bottom: 5px;">🌙</div>
+                            <strong>Dinner</strong><br>
+                            <small>7:30 PM - 10:00 PM</small>
+                        </div>
+                    </div>
+                    <button onclick="showAllMeals()" class="btn-secondary" style="margin-top: 20px;">📝 Track Meal Manually</button>
+                </div>
+
+                <!-- Saved Meals Summary -->
+                <div id="savedMealsSummary" style="display: none; margin-top: 30px; padding: 20px; background: #e7f3ff; border-radius: 10px;">
+                    <h4 style="color: #667eea;">✅ Saved Meals Today</h4>
+                    <div id="savedMealsList"></div>
+                </div>
+
+                <button id="analyzeFoodBtn" class="btn-primary" onclick="analyzeFoodIntake()" style="margin-top: 20px;">🔍 Analyze My Food Intake</button>
+            </div>
+
+            <!-- Food Tracker Results Section -->
+            <div id="foodTrackerResults" style="display: none;">
+                <!-- Detected Foods -->
+                <div class="card">
+                    <h3>🍽️ Detected Foods</h3>
+                    <div id="detectedFoods" class="detected-foods"></div>
+                </div>
+
+                <!-- Nutrition Summary -->
+                <div class="card">
+                    <h3>📊 Nutrition Summary</h3>
+                    <div id="nutritionSummary" class="nutrition-grid"></div>
+                </div>
+
+                <!-- Food Recommendations -->
+                <div class="card">
+                    <h3>💡 What You Should Eat Next</h3>
+                    <p class="subtitle">Based on your intake, here's what your body needs</p>
+                    <div id="foodRecommendations" class="recommendations-list"></div>
+                </div>
+            </div>
+
+            <!-- Risk Alerts -->
+            <div id="alertsSection" class="alerts-section"></div>
+
+            <!-- Diet Plan -->
+            <div class="card">
+                <h3>🍽️ Your Personalized Meal Plan</h3>
+                <p class="subtitle">Delicious, nutritious meals designed just for you</p>
+                <div id="dietPlan" class="diet-plan">
+                    <p class="placeholder-text">Your customized meal plan will appear here after health analysis</p>
+                </div>
+            </div>
+
+            <!-- Nutrition Progress Chart -->
+            <div class="card">
+                <h3>📈 Your Nutrition Journey</h3>
+                <p class="subtitle">Track your progress towards daily nutrition goals</p>
+                <div id="chartControls" style="margin-bottom: 15px; display: none;">
+                    <button class="chart-btn" onclick="showDailyChart()">Daily View</button>
+                    <button class="chart-btn" onclick="showWeeklyChart()">Weekly View</button>
+                    <button class="chart-btn" onclick="downloadChart()">📥 Download Chart</button>
+                </div>
+                <div id="weekSelector" style="margin-bottom: 15px; display: none;">
+                    <button class="week-btn" onclick="selectWeek(1)">Week 1</button>
+                    <button class="week-btn" onclick="selectWeek(2)">Week 2</button>
+                    <button class="week-btn" onclick="selectWeek(3)">Week 3</button>
+                    <button class="week-btn" onclick="selectWeek(4)">Week 4</button>
+                </div>
+                <canvas id="nutritionChart"></canvas>
+            </div>
+
+            <!-- AI Food Recommendations -->
+            <div class="card">
+                <h3>💡 Smart Food Suggestions</h3>
+                <p class="subtitle">AI-powered recommendations based on your health needs</p>
+                <div id="aiRecommendations" class="recommendations">
+                    <p class="placeholder-text">Personalized food suggestions will appear after your health analysis</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- POST-PREGNANCY DASHBOARD -->
+    <div id="postpartumView" class="dashboard-view">
+        <div class="dashboard-container">
+            <div class="welcome-banner">
+                <h2>🎉 Congratulations on Your New Journey!</h2>
+                <p>Let's focus on your recovery and your baby's nutrition</p>
+            </div>
+
+            <!-- Mother Recovery -->
+            <div class="card">
+                <h3>💪 Your Recovery Nutrition Guide</h3>
+                <p class="subtitle">Essential nutrients to help your body heal and regain strength</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nutrient</th>
+                            <th>Daily Need</th>
+                            <th>Why It Matters</th>
+                            <th>Best Food Sources</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Iron</strong></td>
+                            <td>27 mg</td>
+                            <td>Helps recover from blood loss during delivery</td>
+                            <td>Spinach, Dates, Ragi, Pomegranate</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Calcium</strong></td>
+                            <td>1200 mg</td>
+                            <td>Strengthens bones and supports milk production</td>
+                            <td>Milk, Yogurt, Cheese, Sesame seeds</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Protein</strong></td>
+                            <td>75 g</td>
+                            <td>Repairs tissues and boosts energy</td>
+                            <td>Eggs, Dal, Chicken, Paneer</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Omega-3</strong></td>
+                            <td>300 mg</td>
+                            <td>Supports mental health and reduces postpartum blues</td>
+                            <td>Fish, Walnuts, Flaxseeds, Chia seeds</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Breastfeeding Nutrition -->
+            <div class="card breastfeeding-card">
+                <h3>🤱 Breastfeeding Nutrition</h3>
+                <p class="subtitle">Nourish yourself to nourish your baby</p>
+                <div class="info-box">
+                    <p><strong>💡 Did you know?</strong> Breastfeeding burns extra calories!</p>
+                    <p><strong>Extra Calories Needed:</strong> +500 kcal/day</p>
+                    <p><strong>Your Daily Goal:</strong> 2500 kcal/day</p>
+                </div>
+                <h4>🌟 Power Foods for Milk Production:</h4>
+                <div class="food-grid">
+                    <div class="food-item">🥛 Milk</div>
+                    <div class="food-item">🌰 Almonds</div>
+                    <div class="food-item">🌿 Fenugreek</div>
+                    <div class="food-item">🥣 Oats</div>
+                    <div class="food-item">🌾 Ragi</div>
+                    <div class="food-item">🍇 Dates</div>
+                </div>
+            </div>
+
+            <!-- Baby Feeding Planner -->
+            <div class="card">
+                <h3>👶 Your Baby's Feeding Guide</h3>
+                <p class="subtitle">Age-appropriate nutrition for healthy growth</p>
+                <div class="feeding-stages">
+                    <div class="stage">
+                        <div class="stage-header">0-6 Months</div>
+                        <div class="stage-icon">🍼</div>
+                        <h4>Exclusive Breastfeeding</h4>
+                        <ul>
+                            <li>Only breast milk needed</li>
+                            <li>No water or solid food</li>
+                            <li>Feed every 2-3 hours</li>
+                            <li>6-8 feeds per day</li>
+                            <li>Follow baby's hunger cues</li>
+                        </ul>
+                    </div>
+                    <div class="stage">
+                        <div class="stage-header">6-12 Months</div>
+                        <div class="stage-icon">🥣</div>
+                        <h4>Introducing Solids</h4>
+                        <ul>
+                            <li>Start with single-ingredient foods</li>
+                            <li>Ragi porridge (iron-rich)</li>
+                            <li>Mashed banana</li>
+                            <li>Rice + dal mash</li>
+                            <li>Vegetable puree</li>
+                            <li>Continue breastfeeding</li>
+                        </ul>
+                    </div>
+                    <div class="stage">
+                        <div class="stage-header">1-2 Years</div>
+                        <div class="stage-icon">🍽️</div>
+                        <h4>Balanced Toddler Diet</h4>
+                        <ul>
+                            <li>Milk (2-3 cups daily)</li>
+                            <li>Egg (1 per day)</li>
+                            <li>Rice & soft vegetables</li>
+                            <li>Fresh seasonal fruits</li>
+                            <li>Small, frequent meals</li>
+                            <li>Introduce family foods</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sample Baby Meal Plan -->
+            <div class="card">
+                <h3>📅 Sample Daily Meal Plan (6-12 Months)</h3>
+                <p class="subtitle">A typical day of nutritious meals for your little one</p>
+                <div class="baby-meal-plan">
+                    <div class="meal-card">
+                        <div class="meal-time">8:00 AM</div>
+                        <h4>🌅 Morning</h4>
+                        <p>Ragi porridge with milk</p>
+                        <span class="meal-note">Warm and easy to digest</span>
+                    </div>
+                    <div class="meal-card">
+                        <div class="meal-time">11:00 AM</div>
+                        <h4>☀️ Mid-Morning</h4>
+                        <p>Mashed banana</p>
+                        <span class="meal-note">Natural sweetness, rich in potassium</span>
+                    </div>
+                    <div class="meal-card">
+                        <div class="meal-time">1:00 PM</div>
+                        <h4>🍛 Lunch</h4>
+                        <p>Rice + dal mash</p>
+                        <span class="meal-note">Complete protein meal</span>
+                    </div>
+                    <div class="meal-card">
+                        <div class="meal-time">4:00 PM</div>
+                        <h4>🌤️ Evening</h4>
+                        <p>Vegetable puree</p>
+                        <span class="meal-note">Introduce different vegetables</span>
+                    </div>
+                    <div class="meal-card">
+                        <div class="meal-time">7:00 PM</div>
+                        <h4>🌙 Dinner</h4>
+                        <p>Khichdi with ghee</p>
+                        <span class="meal-note">Comfort food for better sleep</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>

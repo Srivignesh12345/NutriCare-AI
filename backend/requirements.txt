@@ -1,0 +1,10 @@
+flask
+firebase-admin
+pandas
+numpy
+scikit-learn
+flask-cors
+matplotlib
+seaborn
+openpyxl
+Pillow

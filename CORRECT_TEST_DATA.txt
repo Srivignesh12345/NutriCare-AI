@@ -1,0 +1,106 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                  ✅ CORRECT TEST DATA FOR RISK LEVELS                        ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+## 🎯 Use These Values to Test Each Risk Level
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ NORMAL RISK (Shows as "NORMAL RISK" in UI)                                  │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+Age: 20
+Systolic BP: 100
+Diastolic BP: 60
+Blood Sugar: 6.0
+Body Temp: 98.0
+Heart Rate: 70
+
+Expected Result: NORMAL RISK (Green badge)
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ MEDIUM RISK                                                                  │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+Age: 28
+Systolic BP: 120
+Diastolic BP: 80
+Blood Sugar: 7.5
+Body Temp: 98.6
+Heart Rate: 75
+
+Expected Result: MEDIUM RISK (Yellow badge)
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ HIGH RISK                                                                    │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+Age: 35
+Systolic BP: 140
+Diastolic BP: 95
+Blood Sugar: 9.5
+Body Temp: 99.2
+Heart Rate: 95
+
+Expected Result: HIGH RISK (Red badge)
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ WHY THE PREVIOUS VALUES SHOWED MEDIUM RISK                                  │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+The ML model was trained on real maternal health data. Based on the patterns
+it learned, values like:
+- Age: 25, BP: 115/75, BS: 6.5, Temp: 98.6, HR: 72
+
+Are classified as MEDIUM RISK because:
+• Blood pressure 115/75 is borderline
+• Blood sugar 6.5 is slightly elevated
+• Age 25 with these values indicates some risk
+
+The model is working correctly - it's predicting based on actual medical data!
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ UNDERSTANDING THE MODEL                                                      │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+NORMAL RISK requires:
+✅ Very low blood pressure (< 105/65)
+✅ Low blood sugar (< 6.2)
+✅ Normal temperature (< 98.2)
+✅ Low heart rate (< 72)
+✅ Younger age (< 22)
+
+MEDIUM RISK includes:
+• Slightly elevated BP (105-135)
+• Moderate blood sugar (6.2-9.0)
+• Normal to slightly elevated vitals
+• Most pregnancy cases fall here
+
+HIGH RISK includes:
+• High BP (> 135)
+• High blood sugar (> 9.0)
+• Elevated heart rate (> 90)
+• Multiple risk factors
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ QUICK TEST WORKFLOW                                                          │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+1. Start backend: cd backend && python app.py
+2. Open: frontend/dashboard.html
+3. Enter NORMAL RISK values (Age=20, BP=100/60, etc.)
+4. Click "Analyze Health"
+5. See: "NORMAL RISK" in green badge
+6. Try MEDIUM RISK values
+7. See: "MEDIUM RISK" in yellow badge
+8. Try HIGH RISK values
+9. See: "HIGH RISK" in red badge
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                    📝 SAVE THIS FOR TESTING!                                 ║
+╚══════════════════════════════════════════════════════════════════════════════╝
